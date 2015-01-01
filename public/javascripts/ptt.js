@@ -1,15 +1,13 @@
-var reader;
-var progress;
+
 var listView;
-
 var DBG = true;
-
 var willDeleteItem = {};
 var mItemArray = [];
 
 $('document').ready(function() {
-    if(DBG){console.log('Document Ready !');}
-
+  if(DBG){
+    console.log('Document Ready !');
+  }
   window.applicationCache.addEventListener('updateready', function(e) {
     if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
       // Browser downloaded a new app cache.
@@ -59,8 +57,6 @@ function getItemTemplate(boardItem, index) {
         "</li>";
   return templateText;
 }
-
-
 
 function updateFavoriteItemList(itemsArray) {
     if(DBG){console.log(">>> updateFavoriteItemList: " + itemsArray.length);}

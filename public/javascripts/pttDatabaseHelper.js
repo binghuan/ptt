@@ -52,7 +52,6 @@ function deleteFavoriteItems(value) {
 
 function addFavoriteItems(value) {
     var dataArray = getFavoriteBoards();
-
     var i;
     var hit = false;
     for(i=0; i< dataArray.length ; i++) {
