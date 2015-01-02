@@ -15,9 +15,13 @@
     <title>My Ptt</title>
 
     <link rel="stylesheet" href="stylesheets/jquery.mobile-1.4.2.min.css">
-
     <!-- jQuery and jQuery Mobile -->
     <script src="javascripts/libs/jquery-1.11.1.min.js"></script>
+    <script>
+      $(document).bind("mobileinit", function () {
+        $.mobile.defaultPageTransition = 'slide';
+      });
+    </script>
     <script src="javascripts/libs/jquery.mobile-1.4.2.min.js"></script>
     <script src='javascripts/pttDatabaseHelper.js'></script>
     <script src='javascripts/ptt.js'></script>
@@ -59,36 +63,67 @@
     -->
 </head>
 <body>
-<!-- Home -->
-<div data-role="page" id="page1">
+  <!-- Home -->
+  <div data-role="page" id="fav_page" data-url="fav_page">
     <div data-theme="a" data-role="header">
-        <a data-ajax="false" data-role="button" data-theme='a' href="./pttBoards.html" data-icon="plus" data-iconpos="left" class="ui-btn-right">Add More</a>
-        <a id="hotBoardsBtn" data-ajax="false" data-role="button" data-theme='a' href="#" data-icon="grid" data-iconpos="left" class="ui-btn-left">熱門看板</a>
-        <!--<button data-icon="gear" data-theme="b" class='ui-btn-right'>Settings</button>-->
-        <h1 class='ui-title'>
-            My Ptt
-        </h1>
+        <a data-ajax="false" data-role="button" data-theme='a' href="#board_page" data-icon="plus" data-iconpos="left" class="ui-btn-right" >Add More</a>
+        <a id="hotBoardsBtn" data-ajax="false" data-role="button" data-theme='a' href="#hot_page" data-icon="grid" data-iconpos="left" class="ui-btn-left">熱門看板</a>
+        <h1 class='ui-title'>My Ptt</h1>
     </div>
     <div data-role="content">
         <div>
             <ul id='itemListView' data-role="listview" data-split-icon="minus" data-split-theme="d" data-inset="true">
             </ul>
         </div>
-        <!-- hidden lightbox for delete item -->
-        <div data-theme="a" data-role="popup" id="deleteDialog" data-theme="d" data-overlay-theme="b" class="ui-content"
-             style="max-width:340px; padding-bottom:2em;">
-            <h3>Delete Item?</h3>
-            <p id='deleteItemText'></p>
-            <a id='button_deleteItem' data-role="button" data-rel="back"
-                    data-icon="check" data-inline="true" data-mini="true">Yes</a>
-            <a data-role="button" data-rel="back" data-inline="true" data-mini="true">No</a>
+    </div>
+    <div data-theme="a" data-role="footer" data-position="fixed">
+	    <h3>Powered by BH_Lin</h3>
+	 </div>
+  </div>
+  <!-- Favorite Page -->
+  <div data-role="page" id="hot_page" data-url="hot_page">
+    <div data-theme="a" data-role="header">
+        <a data-ajax="false" data-role="button" data-theme='a' href="#fav_page" data-icon="arrow-r" data-iconpos="right" 
+        class="ui-btn-right">回我的最愛</a>
+        <h1 class='ui-title'>熱門看板</h1>
+    </div>
+    <div data-role="content">
+        <div>
+            <ul id='hotBoardListView' data-role="listview" data-split-icon="minus" data-split-theme="d" data-inset="true">
+            </ul>
         </div>
     </div>
     <div data-theme="a" data-role="footer" data-position="fixed">
-	    <h3>
-	        Powered by BH_Lin
-	    </h3>
-	</div>
+      <h3>Powered by BH_Lin</h3>
+    </div>
+  </div>
+  <!-- All Board Search Page -->
+  <div data-role="page" id="board_page" data-url="board_page">
+    <div data-theme="a" data-role="header">
+        <a data-ajax="false" data-role="button" data-theme='a' href="#fav_page" data-icon="arrow-l" data-iconpos="left" 
+        class="ui-btn-left">回我的最愛</a>
+        <h1 class='ui-title'>搜尋看板</h1>
+    </div>
+    <div data-role="content">
+        <div>
+            <ul id='allBoardListView' data-role="listview" data-split-icon="minus" data-split-theme="d" data-inset="true">
+            </ul>
+        </div>
+    </div>
+    <div data-theme="a" data-role="footer" data-position="fixed">
+      <h3>Powered by BH_Lin</h3>
+    </div>
+  </div>
+  <!-- other visual component -->
+  <!-- hidden lightbox for delete item -->
+  <div data-theme="a" data-role="popup" id="deleteDialog" data-theme="d" data-overlay-theme="b" class="ui-content"
+       style="max-width:340px; padding-bottom:2em;">
+      <h3>Delete Item?</h3>
+      <p id='deleteItemText'></p>
+      <a id='button_deleteItem' data-role="button" data-rel="back"
+              data-icon="check" data-inline="true" data-mini="true">Yes</a>
+      <a data-role="button" data-rel="back" data-inline="true" data-mini="true">No</a>
+  </div>
 </body>
 </html>
 
