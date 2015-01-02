@@ -13,8 +13,6 @@ function getQSParam(paramName) {
 }
 
 
-
-
 $("document").ready(function() {
 
     document.getElementById('pageFrame').style.height = (window.innerHeight-40)+"px";
@@ -22,9 +20,8 @@ $("document").ready(function() {
         document.getElementById('pageFrame').style.height = (window.innerHeight-40)+"px";
     };
 
-	console.log("Document is ready");
 	var height = $(window).height();
-    //$('pageFrame').css('height', height);
+
 
 	var boardInfo = {title: "", url: ""};
 	boardInfo.url = getQSParam("url");

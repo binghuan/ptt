@@ -5,26 +5,52 @@ var willDeleteItem = {};
 var mItemArray = [];
 
 $('document').ready(function() {
-  if(DBG){
-    console.log('Document Ready !');
-  }
-  window.applicationCache.addEventListener('updateready', function(e) {
-    if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
-      // Browser downloaded a new app cache.
-      // Swap it in and reload the page to get the new hotness.
-      window.applicationCache.swapCache();
-      window.location.reload();
-    } else {
-      console.log("Manifest didn't changed. Nothing new to server.");
+    if(DBG){
+      console.log('Document Ready !');
     }
-  }, false);
+    window.applicationCache.addEventListener('updateready', function(e) {
+      if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
+        // Browser downloaded a new app cache.
+        // Swap it in and reload the page to get the new hotness.
+        window.applicationCache.swapCache();
+        window.location.reload();
+      } else {
+        console.log("Manifest didn't changed. Nothing new to server.");
+      }
+    }, false);
 
-    listView = document.getElementById('charadeListView');
     mItemArray = getFavoriteBoards();
     updateFavoriteItemList(mItemArray);
 
     $('#button_deleteItem').click(deleteItem);
     $('#button_addItem').click(addItem);
+
+    // --------  Event binding -------------
+    $("#itemListView").on('swipe', function(){
+        alert("oh yes!");
+    });
+    $('#hotBoardsBtn').click(function(){
+      console.log("hot board clicked");
+      $.get( "/api/hotboard", function(data) {
+          markHotBoards(data);
+          var newHtml = "";
+          for(var i=0; i<data.length; i++){
+            var icon;
+            if(data[i].isAdded){
+              icon = "minus";
+            }else{
+              icon = "plus";
+            }
+            newHtml += "<li>" + "<a href='#' data-ajax='false' data-inline='true'>" +
+              "<h3>" + data[i].boardName +"</h3> <p>" + data[i].boardCap + "</p></a>" +
+              "<a href='#' data-icon='"+ icon+"' data-inline='true' data-rel='popup' data-position-to='window' data-transition='pop'></a>" +
+              "</li>";
+          }
+          $("#itemListView").empty();
+          $("#itemListView").html(newHtml);
+          $("#itemListView").listview("refresh");
+      }); 
+    });
 });
 
 function addItem() {
