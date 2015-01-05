@@ -45,6 +45,42 @@ module.exports = {
 			callback(e.message);
 		}
 	},
+	fetchArticleList : function(url, callback){
+		try{	
+			var options = { 
+			    hostname : 'www.ptt.cc',
+			    port : 443,
+			    path : url,
+			    method : 'GET'
+			};
+			var rawHTML;
+			var httpReq = https.request(options, function(outsideRes) {
+			  	outsideRes.on('data', function (chunk) {
+			  		rawHTML += chunk;
+			  	});
+			  	outsideRes.on('end', function(){
+			  		var result = [];
+			  		var doms = cheerio.load(rawHTML);
+			  		doms(".r-list-container > .r-ent").each(function(idx, e){
+			  			var tmpObj = {};
+			  			//tmpObj.link = "dd";
+			  			tmpObj.link = doms(e).children('.title').children().attr('href');
+			  			tmpObj.title = doms(e).children('.title').text();
+			  			tmpObj.nrec = doms(e).children('.nrec').text();
+			  			tmpObj.date = doms(e).children('.meta').children('.date').text();
+			  			tmpObj.author = doms(e).children('.meta').children('.author').text();
+			  			result.push(tmpObj);
+			  		});
+			  		callback(JSON.stringify(result));
+			  	})
+			});
+			httpReq.end();	
+		}catch(e){
+			console.log(e.message);
+			callback(e.message);
+		}
+
+	},
 	fetchArticle : function(){
 		return "under construction";
 	}

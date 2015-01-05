@@ -3,6 +3,7 @@ var listView;
 var DBG = true;
 var willDeleteItem = {};
 var mItemArray = [];
+var parameters = {};
 
 $(document).on("pageshow", "#hot_page", function(){
   $.get( "/api/hotboard", function(data) {
@@ -50,6 +51,25 @@ $(document).ready(function() {
     
 });
 
+function showArticleList(boardTitle, boardCap, boardUrl, ref){
+   parameters.boardTitle = boardTitle;
+   parameters.boardCap = boardCap;
+   parameters.boardUrl = boardUrl;
+   parameters.ref = ref;
+   $.mobile.changePage("#article_list_page");
+}
+
+$(document).on("pageshow", "#article_list_page", function(){
+  console.log("I got it show yeah~" + parameters.boardTitle + parameters.boardCap + parameters.boardUrl);
+  $("#article_list_page div h1").text("["+parameters.boardTitle+"] "+ parameters.boardCap);
+  $("#article_list_page div a").attr('href', parameters.ref);
+  if(parameters.ref.indexOf('fav') != -1){
+    $("#article_list_page div a").text("回我的最愛");
+  }else{
+    $("#article_list_page div a").text("回熱門看板");
+  }
+});
+
 function addItem() {
   var itemText = $('#inputItemText').val();
   mItemArray.push(itemText);
@@ -73,10 +93,11 @@ function appendCharadeItemList(itemText, index) {
 }
 
 function getItemTemplate(boardItem, index) {
+  var paras = "\"" + boardItem.title + "\",\"" + boardItem.description + "\",\"" + boardItem.link +"\"";
   var templateText = 
-  "<li><a href='pttView.html?url=" + boardItem.link  +  "&title=" + boardItem.title + "' data-ajax='false' data-inline='true'>" + 
+  "<li><a href='#' onclick='showArticleList("+ paras +", \"#fav_page\")' data-ajax='false' data-inline='true'>" + 
         "<h3>" + boardItem.title +"</h3><p>" + boardItem.description + "</p></a>" + 
-        "<a onclick='fillDataToDeleteConfirmDialog(\"" + boardItem.title + "\",\"" + boardItem.description + "\",\"" + boardItem.link + "\")' href='#deleteDialog' data-icon='minus' data-inline='true' data-rel='popup' data-position-to='window' data-transition='pop'></a>"+
+        "<a onclick='fillDataToDeleteConfirmDialog(" + paras + ")' href='#deleteDialog' data-icon='minus' data-inline='true' data-rel='popup' data-position-to='window' data-transition='pop'></a>"+
         "</li>";
   return templateText;
 }
