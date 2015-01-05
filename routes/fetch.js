@@ -34,7 +34,6 @@ module.exports = {
 			  				}
 			  			});
 			  			result.push(resultObj);
-			  			console.log(JSON.stringify(resultObj));
 			  		});
 			  		callback(JSON.stringify(result));
 			  	})

@@ -5,6 +5,28 @@ var willDeleteItem = {};
 var mItemArray = [];
 var parameters = {};
 
+$(document).ready(function() {
+    if(DBG){
+      console.log('Document Ready !');
+    }
+    window.applicationCache.addEventListener('updateready', function(e) {
+      if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
+        // Browser downloaded a new app cache.
+        // Swap it in and reload the page to get the new hotness.
+        window.applicationCache.swapCache();
+        window.location.reload();
+      } else {
+        console.log("Manifest didn't changed. Nothing new to server.");
+      }
+    }, false);
+
+    mItemArray = getFavoriteBoards();
+    updateFavoriteItemList(mItemArray);
+
+    $('#button_deleteItem').click(deleteItem);
+    $('#button_addItem').click(addItem);
+});
+
 $(document).on("pageshow", "#hot_page", function(){
   $.get( "/api/hotboard", function(data) {
       markHotBoards(data);
@@ -27,38 +49,6 @@ $(document).on("pageshow", "#hot_page", function(){
   });
 });
 
-$(document).ready(function() {
-    if(DBG){
-      console.log('Document Ready !');
-    }
-    window.applicationCache.addEventListener('updateready', function(e) {
-      if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
-        // Browser downloaded a new app cache.
-        // Swap it in and reload the page to get the new hotness.
-        window.applicationCache.swapCache();
-        window.location.reload();
-      } else {
-        console.log("Manifest didn't changed. Nothing new to server.");
-      }
-    }, false);
-
-    mItemArray = getFavoriteBoards();
-    updateFavoriteItemList(mItemArray);
-
-    $('#button_deleteItem').click(deleteItem);
-    $('#button_addItem').click(addItem);
-
-    
-});
-
-function showArticleList(boardTitle, boardCap, boardUrl, ref){
-   parameters.boardTitle = boardTitle;
-   parameters.boardCap = boardCap;
-   parameters.boardUrl = boardUrl;
-   parameters.ref = ref;
-   $.mobile.changePage("#article_list_page");
-}
-
 $(document).on("pageshow", "#article_list_page", function(){
   console.log("I got it show yeah~" + parameters.boardTitle + parameters.boardCap + parameters.boardUrl);
   $("#article_list_page div h1").text("["+parameters.boardTitle+"] "+ parameters.boardCap);
@@ -68,7 +58,30 @@ $(document).on("pageshow", "#article_list_page", function(){
   }else{
     $("#article_list_page div a").text("回熱門看板");
   }
+  $.get( "/api/articlelist/" + encodeURIComponent(parameters.boardUrl), function(articles) {
+      var newHtml = "";
+      for(var i=0; i<articles.length; i++){
+        newHtml += "<li>" + "<a href='#' data-ajax='false' data-inline='true' data-icon='arror-r'>" +
+          "<h3>" + articles[i].title +"</h3> " + 
+             "<p>" + articles[i].nrec + "</p>" +
+             "<p>" + articles[i].date + "</p>" +
+             "<p>" + articles[i].author + "</p>" +
+          "</a>" + "</li>";
+      }
+      $("#articlesListView").empty();
+      $("#articlesListView").html(newHtml);
+      $("#articlesListView").listview("refresh");
+      console.log(JSON.stringify(articles));
+  });
 });
+
+function showArticleList(boardTitle, boardCap, boardUrl, ref){
+   parameters.boardTitle = boardTitle;
+   parameters.boardCap = boardCap;
+   parameters.boardUrl = boardUrl;
+   parameters.ref = ref;
+   $.mobile.changePage("#article_list_page");
+}
 
 function addItem() {
   var itemText = $('#inputItemText').val();

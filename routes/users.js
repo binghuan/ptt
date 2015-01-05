@@ -16,7 +16,7 @@ router.get('/articlelist/:url', function(req, res) {
 	console.log("api : articlelist");
 	console.log("params : " + req.params.url);
 	res.setHeader('Content-Type', 'application/json');
-	fetchHot.fetchArticleList("/" + req.params.url, function(content){
+	fetchHot.fetchArticleList(req.params.url, function(content){
 		res.send(content);
 	});
 });
