@@ -45,9 +45,10 @@ module.exports = {
 		}
 	},
 	fetchArticleList : function(url, callback){
-		try{	
+		try{
 			var options = { 
 			    hostname : 'www.ptt.cc',
+			    headers : {Cookie : 'over18=1'},
 			    port : 443,
 			    path : url,
 			    method : 'GET'

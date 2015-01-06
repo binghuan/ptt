@@ -38,7 +38,8 @@ $(document).on("pageshow", "#hot_page", function(){
         }else{
           icon = "plus";
         }
-        newHtml += "<li>" + "<a href='#' data-ajax='false' data-inline='true'>" +
+        var paras = "\"" + data[i].boardName + "\",\"" + data[i].boardCap + "\",\"" + data[i].link +"\"";
+        newHtml += "<li>" + "<a href='#' onclick='showArticleList("+ paras +", \"#hot_page\")' data-ajax='false' data-inline='true'>" +
           "<h3>" + data[i].boardName +"</h3> <p>" + data[i].boardCap + "</p></a>" +
           "<a href='#' data-icon='"+ icon+"' data-inline='true' data-rel='popup' data-position-to='window' data-transition='pop'></a>" +
           "</li>";
@@ -50,8 +51,7 @@ $(document).on("pageshow", "#hot_page", function(){
 });
 
 $(document).on("pageshow", "#article_list_page", function(){
-  console.log("I got it show yeah~" + parameters.boardTitle + parameters.boardCap + parameters.boardUrl);
-  $("#article_list_page div h1").text("["+parameters.boardTitle+"] "+ parameters.boardCap);
+  $("#article_list_page div h1").text("["+ parameters.boardTitle+"] "+ parameters.boardCap);
   $("#article_list_page div a").attr('href', parameters.ref);
   if(parameters.ref.indexOf('fav') != -1){
     $("#article_list_page div a").text("回我的最愛");
@@ -61,17 +61,17 @@ $(document).on("pageshow", "#article_list_page", function(){
   $.get( "/api/articlelist/" + encodeURIComponent(parameters.boardUrl), function(articles) {
       var newHtml = "";
       for(var i=0; i<articles.length; i++){
+        var pushCount = articles[i].nrec ? articles[i].nrec : 0 ;
         newHtml += "<li>" + "<a href='#' data-ajax='false' data-inline='true' data-icon='arror-r'>" +
+          "<span class='ui-li-count'>" + pushCount + "</span>" +
           "<h3>" + articles[i].title +"</h3> " + 
-             "<p>" + articles[i].nrec + "</p>" +
-             "<p>" + articles[i].date + "</p>" +
+             "<p class='ui-li-aside'>" + articles[i].date + "</p>" +
              "<p>" + articles[i].author + "</p>" +
           "</a>" + "</li>";
       }
       $("#articlesListView").empty();
       $("#articlesListView").html(newHtml);
       $("#articlesListView").listview("refresh");
-      console.log(JSON.stringify(articles));
   });
 });
 
