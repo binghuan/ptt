@@ -63,7 +63,6 @@ module.exports = {
 			  		var doms = cheerio.load(rawHTML);
 			  		doms(".r-list-container > .r-ent").each(function(idx, e){
 			  			var tmpObj = {};
-			  			//tmpObj.link = "dd";
 			  			tmpObj.link = doms(e).children('.title').children().attr('href');
 			  			tmpObj.title = doms(e).children('.title').text();
 			  			tmpObj.nrec = doms(e).children('.nrec').text();
@@ -79,9 +78,32 @@ module.exports = {
 			console.log(e.message);
 			callback(e.message);
 		}
-
 	},
-	fetchArticle : function(){
-		return "under construction";
+	fetchArticle : function(url, callback){
+		try{
+			var options = { 
+			    hostname : 'www.ptt.cc',
+			    headers : {Cookie : 'over18=1'},
+			    port : 443,
+			    path : url,
+			    method : 'GET'
+			};
+			var rawHTML;
+			var httpReq = https.request(options, function(outsideRes) {
+			  	outsideRes.on('data', function (chunk) {
+			  		rawHTML += chunk;
+			  	});
+			  	outsideRes.on('end', function(){
+			  		var result = [];
+			  		var doms = cheerio.load(rawHTML);
+			  		var warp = {"rawData" : doms("#main-container").html()};
+			  		callback(JSON.stringify(warp));
+			  	})
+			});
+			httpReq.end();	
+		}catch(e){
+			console.log(e.message);
+			callback(e.message);
+		}
 	}
 }

@@ -4,6 +4,7 @@ var DBG = true;
 var willDeleteItem = {};
 var mItemArray = [];
 var parameters = {};
+var articleLink;
 
 $(document).ready(function() {
     if(DBG){
@@ -62,7 +63,7 @@ $(document).on("pageshow", "#article_list_page", function(){
       var newHtml = "";
       for(var i=0; i<articles.length; i++){
         var pushCount = articles[i].nrec ? articles[i].nrec : 0 ;
-        newHtml += "<li>" + "<a href='#' data-ajax='false' data-inline='true' data-icon='arror-r'>" +
+        newHtml += "<li>" + "<a href='#' onclick='showArticle(\""+ articles[i].link +"\")' data-ajax='false' data-inline='true' data-icon='arror-r'>" +
           "<span class='ui-li-count'>" + pushCount + "</span>" +
           "<h3>" + articles[i].title +"</h3> " + 
              "<p class='ui-li-aside'>" + articles[i].date + "</p>" +
@@ -75,12 +76,30 @@ $(document).on("pageshow", "#article_list_page", function(){
   });
 });
 
+$(document).on("pageshow", "#article_page", function(){
+  console.log("get : " + articleLink);
+  $.get( "/api/article/" + encodeURIComponent(articleLink), function(article) {
+      $("#mainContent").append(article.rawData);
+      //console.log(article);
+  });
+});
+
 function showArticleList(boardTitle, boardCap, boardUrl, ref){
    parameters.boardTitle = boardTitle;
    parameters.boardCap = boardCap;
    parameters.boardUrl = boardUrl;
    parameters.ref = ref;
    $.mobile.changePage("#article_list_page");
+}
+
+function showArticle(link){
+   //parameters.boardTitle = boardTitle;
+   //parameters.boardCap = boardCap;
+   //parameters.boardUrl = boardUrl;
+   //parameters.ref = ref;
+   console.log("show Article");
+   articleLink = link;
+   $.mobile.changePage("#article_page");
 }
 
 function addItem() {
