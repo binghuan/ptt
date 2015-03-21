@@ -12,11 +12,12 @@ router.get('/hotboard', function(req, res) {
 	});
 });
 
-router.get('/articlelist/:url', function(req, res) {
+router.get('/articlelist/:url/:page', function(req, res) {
 	console.log("api : articlelist");
 	console.log("params : " + req.params.url);
+	console.log("params : " + req.params.page)
 	res.setHeader('Content-Type', 'application/json');
-	fetchHot.fetchArticleList(req.params.url, function(content){
+	fetchHot.fetchArticleList(req.params.url, req.params.page, function(content){
 		res.send(content);
 	});
 });

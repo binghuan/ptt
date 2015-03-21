@@ -51,7 +51,12 @@ $(document).on("pageshow", "#hot_page", function(){
   });
 });
 
+$(document).on("pageshow", "#fav_page", function(){
+  updateFavoriteItemList(mItemArray);
+});
+
 $(document).on("pageshow", "#article_list_page", function(){
+  console.log("on page init, the parameters : " + JSON.stringify(parameters));
   $("#article_list_page div h1").text("["+ parameters.boardTitle+"] "+ parameters.boardCap);
   $("#article_list_page div a").attr('href', parameters.ref);
   if(parameters.ref.indexOf('fav') != -1){
@@ -59,7 +64,7 @@ $(document).on("pageshow", "#article_list_page", function(){
   }else{
     $("#article_list_page div a").text("回熱門看板");
   }
-  $.get( "/api/articlelist/" + encodeURIComponent(parameters.boardUrl), function(articles) {
+  $.get( "/api/articlelist/" + encodeURIComponent(parameters.boardUrl)+"/1", function(articles) {
       var newHtml = "";
       for(var i=0; i<articles.length; i++){
         var pushCount = articles[i].nrec ? articles[i].nrec : 0 ;
@@ -76,11 +81,10 @@ $(document).on("pageshow", "#article_list_page", function(){
   });
 });
 
-$(document).on("pageshow", "#article_page", function(){
+$(document).on("pageinit", "#article_page", function(){
   console.log("get : " + articleLink);
   $.get( "/api/article/" + encodeURIComponent(articleLink), function(article) {
       $("#mainContent").append(article.rawData);
-      //console.log(article);
   });
 });
 
@@ -89,14 +93,11 @@ function showArticleList(boardTitle, boardCap, boardUrl, ref){
    parameters.boardCap = boardCap;
    parameters.boardUrl = boardUrl;
    parameters.ref = ref;
+   console.log('ready to show :' + JSON.stringify(parameters));
    $.mobile.changePage("#article_list_page");
 }
 
 function showArticle(link){
-   //parameters.boardTitle = boardTitle;
-   //parameters.boardCap = boardCap;
-   //parameters.boardUrl = boardUrl;
-   //parameters.ref = ref;
    console.log("show Article");
    articleLink = link;
    $.mobile.changePage("#article_page");
@@ -136,6 +137,7 @@ function getItemTemplate(boardItem, index) {
 
 function updateFavoriteItemList(itemsArray) {
     if(DBG){console.log(">>> updateFavoriteItemList: " + itemsArray.length);}
+    console.log(itemsArray);
     //storeFavoriteItems(mItemArray);
     var listHtml = "", i;
     for(i=0; i< itemsArray.length; i++) {
