@@ -5,6 +5,7 @@ var willDeleteItem = {};
 var mItemArray = [];
 var parameters = {};
 var articleLink;
+var pageCount = 1;
 
 $(document).ready(function() {
     if(DBG){
@@ -55,6 +56,34 @@ $(document).on("pageshow", "#fav_page", function(){
   updateFavoriteItemList(mItemArray);
 });
 
+function loadMore(){
+  console.log("on load more!");
+  pageCount++;
+  $.get( "/api/articlelist/" + encodeURIComponent(parameters.boardUrl)+"/" + pageCount, function(articles) {
+      var newHtml = "";
+      for(var i=0; i<articles.length; i++){
+        var pushCount = articles[i].nrec ? articles[i].nrec : 0 ;
+        newHtml += "<li>" + "<a href='#' onclick='showArticle(\""+ articles[i].link +"\")' data-ajax='false' data-inline='true' data-icon='arror-r'>" +
+          "<span class='ui-li-count'>" + pushCount + "</span>" +
+          "<h3>" + articles[i].title +"</h3> " + 
+             "<p class='ui-li-aside'>" + articles[i].date + "</p>" +
+             "<p>" + articles[i].author + "</p>" +
+          "</a>" + "</li>";
+      }
+      $("#articlesListView").append(newHtml);
+      $("#articlesListView").listview("refresh");
+  });
+}
+
+$(document).on("scrollstop", function(){
+  if ($(document).height() - 50 <= $(window).scrollTop() + $(window).height()) {
+    //check if current page is article list
+    if("article_list_page" === $.mobile.activePage.attr('id')){
+     loadMore(); 
+    }
+  }
+})
+
 $(document).on("pageshow", "#article_list_page", function(){
   console.log("on page init, the parameters : " + JSON.stringify(parameters));
   $("#article_list_page div h1").text("["+ parameters.boardTitle+"] "+ parameters.boardCap);
@@ -64,7 +93,7 @@ $(document).on("pageshow", "#article_list_page", function(){
   }else{
     $("#article_list_page div a").text("回熱門看板");
   }
-  $.get( "/api/articlelist/" + encodeURIComponent(parameters.boardUrl)+"/1", function(articles) {
+  $.get( "/api/articlelist/" + encodeURIComponent(parameters.boardUrl)+"/" +pageCount, function(articles) {
       var newHtml = "";
       for(var i=0; i<articles.length; i++){
         var pushCount = articles[i].nrec ? articles[i].nrec : 0 ;
@@ -137,8 +166,6 @@ function getItemTemplate(boardItem, index) {
 
 function updateFavoriteItemList(itemsArray) {
     if(DBG){console.log(">>> updateFavoriteItemList: " + itemsArray.length);}
-    console.log(itemsArray);
-    //storeFavoriteItems(mItemArray);
     var listHtml = "", i;
     for(i=0; i< itemsArray.length; i++) {
       listHtml += getItemTemplate(itemsArray[i], i);
