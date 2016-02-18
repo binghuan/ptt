@@ -2,11 +2,10 @@ var https = require('https');
 var cheerio = require('cheerio');
 var iconv = require('iconv-lite');
 
-iconv.extendNodeEncodings();
 module.exports = {
 	fetchHotBoard : function(callback){
-		try{	
-			var options = { 
+		try{
+			var options = {
 			    hostname : 'www.ptt.cc',
 			    port : 443,
 			    path : '/hotboard.html',
@@ -14,9 +13,9 @@ module.exports = {
 			};
 			var rawHTML;
 			var httpReq = https.request(options, function(outsideRes) {
-				outsideRes.setEncoding('big5');
 			  	outsideRes.on('data', function (chunk) {
-			  		rawHTML += chunk;
+					var buf = iconv.decode(chunk, 'big5');
+			  		rawHTML += buf;
 			  	});
 			  	outsideRes.on('end', function(){
 			  		var result = [];
@@ -38,7 +37,7 @@ module.exports = {
 			  		callback(JSON.stringify(result));
 			  	})
 			});
-			httpReq.end();	
+			httpReq.end();
 		}catch(e){
 			console.log(e.message);
 			callback(e.message);
@@ -60,7 +59,7 @@ module.exports = {
 	},
 	fetchArticleList : function(url, page, callback){
 		try{
-			var options = { 
+			var options = {
 			    hostname : 'www.ptt.cc',
 			    headers : {Cookie : 'over18=1'},
 			    port : 443,
@@ -104,16 +103,16 @@ module.exports = {
 			  		}
 			  	})
 			});
-			httpReq.end();	
+			httpReq.end();
 		}catch(e){
 			console.log(e.message);
 			callback(e.message);
 		}
 	},
-	
+
 	fetchArticle : function(url, callback){
 		try{
-			var options = { 
+			var options = {
 			    hostname : 'www.ptt.cc',
 			    headers : {Cookie : 'over18=1'},
 			    port : 443,
@@ -132,7 +131,7 @@ module.exports = {
 			  		callback(JSON.stringify(warp));
 			  	})
 			});
-			httpReq.end();	
+			httpReq.end();
 		}catch(e){
 			console.log(e.message);
 			callback(e.message);
