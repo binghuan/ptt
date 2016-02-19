@@ -9,7 +9,6 @@ router.post('/comment', function(req, res) {
 	console.log("api : create comment");
 	res.setHeader('Content-Type', 'application/json');
     res.setHeader('Access-Control-Allow-Origin', '*');
-	console.log(req.body);
 	co(function*() {
   		// Connection URL
   		var db = yield MongoClient.connect('mongodb://dixen:dixen@ds051575.mongolab.com:51575/dixen_poc');
@@ -17,13 +16,13 @@ router.post('/comment', function(req, res) {
 		// Insert a single document
 		var r = yield db.collection('inserts').insertOne(req.body);
 		assert.equal(1, r.insertedCount);
-		console.log(r);
   		// Close connection
   		db.close();
+		res.end("successful");
 	}).catch(function(err) {
 	  console.log(err.stack);
+	  res.end("error");
 	});
-    res.end("");
 });
 
 module.exports = router;
