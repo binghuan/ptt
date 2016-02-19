@@ -23,7 +23,25 @@ var option3 = {
 	path : '/api/hotboard',
 	method : 'GET'
 };
-var httpReq = http.request(option3, function(res) {
+var data = {
+	"companyName" : "TrendMicro",
+	"jobName" : "Software Engineer",
+	"comment" : "It is shit job!",
+	"corURL" : "http://www.104.com.tw/xxxxx",
+	"timeStampe" : 1234567890
+}
+var option4 = {
+	hostname : 'localhost',
+	port : 8080,
+	path : '/smo/comment',
+	method : 'POST',
+	headers: {
+        'Content-Type': 'application/json'
+    }
+};
+
+var httpReq = http.request(option4, function(res) {
+	res.setEncoding('utf8');
 	res.on('data',(chunk) => {
 		console.log("ddd" + chunk);
 	});
@@ -31,6 +49,7 @@ var httpReq = http.request(option3, function(res) {
 		console.log(c);
 	});
 });
+httpReq.write(JSON.stringify(data));
 httpReq.end();
 
 /*
