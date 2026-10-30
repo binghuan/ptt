@@ -1,6 +1,12 @@
 
 # PTT Web Application
 
+## Feature overview
+
+![ptt — feature flow diagram](README-assets/project-preview.svg)
+
+Conceptual feature flow based on this repository; this is a documentation diagram, not an application screenshot.
+
 A web application for browsing PTT (批踢踢實業坊), Taiwan's largest bulletin board system. This application provides a mobile-friendly interface to access PTT content including hot boards, article lists, and individual articles.
 
 ## Features
